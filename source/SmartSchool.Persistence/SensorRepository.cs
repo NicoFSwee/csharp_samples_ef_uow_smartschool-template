@@ -1,4 +1,5 @@
 ﻿using SmartSchool.Core.Contracts;
+using SmartSchool.Core.Entities;
 using System.Linq;
 
 namespace SmartSchool.Persistence
@@ -11,5 +12,14 @@ namespace SmartSchool.Persistence
         {
             _dbContext = dbContext;
         }
+
+        public Sensor[] GetAll() => _dbContext.Sensors.OrderBy(s => s.Location)
+                                                        .ThenBy(s => s.Name)
+                                                        .ToArray();
+
+        public Measurement[] GetMeasurementsFromSensorWithLocationAndName(string location, string name) =>
+            _dbContext.Sensors.FirstOrDefault(s => s.Location == location && s.Name == name)
+            .Measurements.ToArray();
+
     }
 }

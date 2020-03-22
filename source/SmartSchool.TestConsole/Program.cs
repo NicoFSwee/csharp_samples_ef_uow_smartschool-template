@@ -40,24 +40,43 @@ namespace SmartSchool.TestConsole
 				Console.WriteLine("--------------------------------------------");
 				Console.WriteLine();
 
-				var count = 0;   // TODO
+				var count = unitOfWork.MeasurementRepository.GetMeasurementsByLocationAndName("livingroom", "temperature").Count();
 				Console.WriteLine($"Anzahl Messwerte für Sensor temperature in location livingroom: {count}");
 				Console.WriteLine();
 
-				var greatestmeasurements = new Measurement[0];  // TODO
+				var greatestmeasurements = unitOfWork.SensorRepository.GetMeasurementsFromSensorWithLocationAndName("livingroom", "temperature")
+																			.OrderByDescending(_ => _.Value)
+																			.ThenByDescending(_ => _.Time)
+																			.Take(3)
+																			.ToArray();
+
 				Console.WriteLine("Letzte 3 höchste Temperaturmesswerte im Wohnzimmer");
 				WriteMeasurements(greatestmeasurements);
 				Console.WriteLine();
 
-				var average = -1; // TODO
+				var average = unitOfWork.SensorRepository.GetMeasurementsFromSensorWithLocationAndName("office", "co2")
+															.Where(_ => _.Value > 300 && _.Value < 5000)
+															.Average(_ => _.Value);
+
 				Console.WriteLine($"Durchschnitt der gültigen Co2-Werte (>300, <5000) im office: {average}");
 				Console.WriteLine();
 				Console.WriteLine("Alle Sensoren mit dem Durchschnitt der Messwerte");
-				// TODO
+				WriteAllSensorsWithAverageValues(unitOfWork.SensorRepository.GetAll());
+
+				unitOfWork.SaveChanges();
 			}
 
 			Console.Write("Beenden mit Eingabetaste ...");
 			Console.ReadLine();
+		}
+
+		private static void WriteAllSensorsWithAverageValues(Sensor[] sensors)
+		{
+			Console.WriteLine($"{"Location", -20}{"Name", -20}{ "Value", 0}");
+			foreach (var sensor in sensors)
+			{
+				Console.WriteLine($"{sensor.Location, -20}{sensor.Name, -20}{sensor.Measurements.Average(_ => _.Value),0:f2}");
+			}
 		}
 
 		private static void WriteMeasurements(Measurement[] measurements)

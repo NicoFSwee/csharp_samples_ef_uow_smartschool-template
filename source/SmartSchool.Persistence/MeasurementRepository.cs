@@ -18,5 +18,7 @@ namespace SmartSchool.Persistence
             _dbContext.Measurements.AddRange(measurements);
         }
 
-   }
+        public Measurement[] GetMeasurementsByLocationAndName(string location, string name) => 
+            _dbContext.Measurements.OrderByDescending(m => m.Sensor.Location == location && m.Sensor.Name == name).ToArray();
+    }
 }

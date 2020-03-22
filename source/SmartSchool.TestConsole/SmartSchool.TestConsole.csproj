@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SmartSchool.Core\SmartSchool.Core.csproj" />
     <ProjectReference Include="..\SmartSchool.Persistence\SmartSchool.Persistence.csproj" />
+    <ProjectReference Include="..\Utils\Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>
